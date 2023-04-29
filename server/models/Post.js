@@ -29,6 +29,23 @@ const postSchema = mongoose.Schema(
       type: Array,
       default: [],
     },
+    commentCount: {
+      type: Number,
+      default: 0
+    },
+    report: {
+      type: Array,
+      default: []
+    },
+    status: {
+      type: Boolean,
+      default: true
+    },
+    edited: {
+      type: Boolean,
+      default: false
+    }
+  
   },
   { timestamps: true }
 );
