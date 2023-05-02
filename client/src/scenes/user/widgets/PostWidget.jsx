@@ -16,6 +16,7 @@ import {
 } from "@mui/material";
 import EditPost from "components/user/EditPost";
 import DeletePost from "components/user/DeletePost";
+import ReportPost from "components/user/ReportPost";
 import FlexBetween from "components/user/FlexBetween";
 import Friend from "components/user/Friend";
 import WidgetWrapper from "components/user/WidgetWrapper";
@@ -24,6 +25,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { setPost,} from "state/userState";
 
 const PostWidget = ({
+  
   postId,
   postUserId,
   name,
@@ -45,8 +47,10 @@ const PostWidget = ({
     setAnchorEl(null);
   };
 
+
   const [isUpdate, setIsUpdate] = useState(false);
   const [isDelete, setIsDelete] = useState(false);
+  const [isReport,setIsReport] = useState(false)
   const [isComments, setIsComments] = useState(false);
   const dispatch = useDispatch();
   const token = useSelector((state) => state.userState.token);
@@ -95,6 +99,15 @@ const PostWidget = ({
           isRemove={true}
         />
       )}
+      {isReport && (
+        <ReportPost
+        setIsReport={setIsReport}
+        postId={postId}
+        postUserId={postUserId}
+       
+        isReported={true}
+        />
+      )}
 
       <Friend
         friendId={postUserId}
@@ -135,7 +148,7 @@ const PostWidget = ({
           </FlexBetween>
         </FlexBetween>
 
-        <IconButton>
+        {/* <IconButton> */}
           {/* <ShareOutlined /> */}
 
           <div>
@@ -165,33 +178,42 @@ const PostWidget = ({
                   },
                 }}
               >
-                {user._id === postUserId && (
-                  <>
+                {user._id === postUserId ? (
+                  <div>
                     <MenuItem
                       onClick={() => {
                         setIsUpdate(true);
                         handleClose();
                       }}
                     >
-                      edit
+                      Edit
                     </MenuItem>
 
                     <MenuItem
+                    sx={{color:"red"}}
                       onClick={() => {
                         setIsDelete(true);
+                     
                         handleClose();
                       }}
                     >
-                      delete
+                      Delete
                     </MenuItem>
-                  </>
+                    
+                  </div>
+                ) : (
+                  <MenuItem sx={{color:"yellow"}} onClick={()=>{
+                    setIsReport(true)
+                    console.log(isReport);
+                    handleClose()
+                  }}>Report</MenuItem>
                 )}
-                <MenuItem onClick={handleClose}>Block</MenuItem>
+             
                 {/* <MenuItem  onClick={handleClose}>Report</MenuItem> */}
               </Menu>,
             ]}
           </div>
-        </IconButton>
+        {/* </IconButton> */}
       </FlexBetween>
       {isComments && (
         <Box mt="0.5rem">

@@ -16,7 +16,7 @@ import MailIcon from "@mui/icons-material/Mail";
 import Topbar from "./Topbar";
 import { useNavigate } from "react-router-dom";
 
-const drawerWidth = 240;
+const drawerWidth = 230;
 
 export default function AdminSidebar() {
   const navigate = useNavigate();
@@ -30,15 +30,19 @@ export default function AdminSidebar() {
       <CssBaseline />
       <AppBar
         position="fixed"
-        sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}
+        // sx={{border:'1px solid red'}}
       >
-        <Topbar />
+        <Topbar/>
       </AppBar>
-      <Drawer
+      <Drawer 
         variant="permanent"
+      
         sx={{
+          
           width: drawerWidth,
           flexShrink: 0,
+          position:'absolute',
+          zIndex:0,
           [`& .MuiDrawer-paper`]: {
             width: drawerWidth,
             boxSizing: "border-box",
@@ -47,13 +51,13 @@ export default function AdminSidebar() {
       >
         <Toolbar />
         <Box sx={{ overflow: "auto", marginTop: "20px" }}>
-          <List>
+          <List >
             {values.map((value, index) => (
-              <ListItem key={value.text} disablePadding>
+              <ListItem key={value.text}   onClick={() => {
+                navigate(value.navigate);
+              }} >
                 <ListItemButton
-                  onClick={() => {
-                    navigate(value.navigate);
-                  }}
+                
                 >
                   <ListItemIcon>
                     {value.text === "Dashboard" && <GridViewRoundedIcon />}

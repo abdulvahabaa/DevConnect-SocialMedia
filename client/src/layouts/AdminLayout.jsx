@@ -5,8 +5,8 @@ import AdminSidebar from "scenes/admin/global/AdminSidebar";
 
 const AdminLayout = () => {
   return (
-    <Box sx={{ marginTop: "20px" }} width="100%" height="100%">
-      <Box width="100%" zIndex={1} sx={{ position: "fixed" }}>
+    <Box width="100%" height="100%">
+      <Box width="100%"  zIndex={1} sx={{ position: "fixed" }}>
         <AdminSidebar />
       </Box>
       <Box flexGrow={1}>

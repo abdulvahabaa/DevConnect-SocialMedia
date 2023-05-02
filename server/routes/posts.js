@@ -1,7 +1,8 @@
 import express from "express";
-import { createPost, deletePost, editPost, getFeedPosts, getUserPosts, likePost } from "../controllers/posts.js";
+import { createPost, deletePost, editPost, getFeedPosts, getUserPosts, likePost,sendReport } from "../controllers/posts.js";
 import { verifyToken } from "../middleware/auth.js";
 import multer from "multer";
+
 
 /* FILE STORAGE */
 const storage = multer.diskStorage({
@@ -25,6 +26,7 @@ router.get("/:userId/posts", verifyToken, getUserPosts);
 
 /* UPDATE */
 router.patch("/:id/like", verifyToken, likePost);
+router.patch("/report",verifyToken,upload.none(),sendReport)
 
 /* Delete */
 router.delete("/:id/deletePost",verifyToken,deletePost);

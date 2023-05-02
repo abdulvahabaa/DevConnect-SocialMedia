@@ -44,7 +44,7 @@ const Topbar = () => {
 
   // const fullName = `${user.firstName} ${user.lastName}`;
   return (
-    <Card zIndex={2}>
+    <Card sx={{border:"1px solid red"}} zIndex={2}>
       <Box
         style={
           !isNonMobileScreens
@@ -95,14 +95,14 @@ const Topbar = () => {
             {/* <Button onClick={()=>{navigate(`/profile/${user._id}`)}}>profile</Button> */}
             <Button
               onClick={() => {
-                navigate("/admin");
+                navigate("/admin/user");
               }}
             >
               Users
             </Button>
             <Button
               onClick={() => {
-                navigate("/admin/report-posts");
+                navigate("/admin/posts");
               }}
             >
               Posts

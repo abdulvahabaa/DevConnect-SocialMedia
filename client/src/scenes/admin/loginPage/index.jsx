@@ -13,7 +13,7 @@ const LoginPageAdmin = () => {
         textAlign="center"
       >
         <Typography fontWeight="bold" fontSize="32px" color="primary">
-          Terminal ADMIN LOGIN
+          DevConnect ADMIN LOGIN
         </Typography>
       </Box>
 
@@ -25,7 +25,7 @@ const LoginPageAdmin = () => {
         backgroundColor={theme.palette.background.alt}
       >
         <Typography fontWeight="500" variant="h5" sx={{ mb: "1.5rem" }}>
-          Welcome to ADMIN Terminal, the Social Media for Developers!
+          Welcome to ADMIN DevConnect, the Social Media for Developers!
         </Typography>
         <Form />
       </Box>

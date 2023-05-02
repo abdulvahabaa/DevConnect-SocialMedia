@@ -86,7 +86,7 @@ export const deletePost= async (req,res) => {
 }
 
 export const editPost = async (req, res) => {
-  console.log("ddlfkdflkdf dgfdgdfg")
+  console.log("Edit post Api")
   try {
     console.log(req.body)
     const { postId, description, picturePath } = req.body;
@@ -96,5 +96,20 @@ export const editPost = async (req, res) => {
     
   } catch (err) {
     res.status(404).json({ message: err.message });
+  }
+};
+
+export const sendReport = async (req, res) => {
+  console.log("api called")
+  try {
+    
+    console.log(req.body)
+    const { postId, userId, content } = req.body;
+    const reportObj = { content, userId };
+    const reports = await Post.findByIdAndUpdate(postId, { $push: { report: reportObj } });
+    res.status(200).json(reports)
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('An error occurred while sending the report.');
   }
 };

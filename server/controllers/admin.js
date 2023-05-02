@@ -48,12 +48,40 @@ export const blockUser = async (req, res) => {
   }
 };
 
-export const getPosts = async (req,res)=>{
-   try {
-     const posts = await Post.find().sort("-createdAt");
-     res.status(200).json(posts);
-   } catch (error) {
+export const getReports = async (req, res) => {
+  try {
+    const reports = await Post.find({
+      $expr: { $gt: [{ $size: "$report" }, 0] },
+    }).sort("-createdAt");
+    res.status(200).json(reports);
+  } catch (error) {
     res.status(404).json({ message: error.message });
-    }
-   
-}
+  }
+};
+
+export const blockPost = async (req, res) => {
+  const { postId } = req.params;
+  console.log(postId);
+  const post = await Post.findById(postId);
+  console.log(post);
+  try {
+    const reports = await Post.findByIdAndUpdate(
+      postId,
+      {
+        picturePath: "BlockedContent.jpg",
+        status: false,
+        description: null,
+        likes: new Map(),
+        comments:[],
+      },
+      { new: true }
+    );
+    console.log("Updated post:", reports);
+    const reportsData = await Post.find({
+      $expr: { $gt: [{ $size: "$report" }, 0] },
+    }).sort("-createdAt");
+    res.status(201).json(reportsData);
+  } catch (error) {
+    res.status(404).json({ message: error.message });
+  }
+};

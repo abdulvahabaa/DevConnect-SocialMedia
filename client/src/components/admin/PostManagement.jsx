@@ -4,16 +4,18 @@ import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import { useSelector } from "react-redux";
 import { useState } from "react";
 import { useEffect } from "react";
+import ReportPost from "components/user/ReportPost";
 
 const PostManagement = () => {
+  const token = useSelector((state) => state.adminState.adminToken);
+  const [reports, setReports] = useState([]);
+  const [loading, setLoading] = useState(false);
+
   const [rows, setRows] = useState([]);
   const columns = [
-
     { field: "postId", headerName: "Post ID", width: 160 },
-    { field: "reports", headerName: "Reports", width: 160 },
-    { field: "count", headerName: "Count", width: 210 },
-    { field: "view", headerName: "View", width: 130 },
-    // { field: "occupation", headerName: "Occupation", width: 130 },
+    { field: "reason", headerName: "Report Issue", width: 260 },
+    { field: "count", headerName: "Report Count", width: 200 },
     {
       field: "Action",
       headerName: "Action",
@@ -21,105 +23,83 @@ const PostManagement = () => {
       renderCell: (params) => (
         <Button
           onClick={() => {
-            blockUser(params.row._id);
+            blockPost(params.row.postId);
           }}
           variant="contained"
           color="primary"
         >
-          {params.row.status === true ? "Block" : "Unblock"}
+          {params.row.status === true ? "Pending" : "Blocked"}
         </Button>
       ),
       width: 130,
     },
     { field: "status", headerName: "Status", width: 130, hidden: true },
   ];
-  const filteredColumns = columns.filter((col) => col.field !== "status");
 
-  useEffect(() => {
-    const getUsers = async () => {
-      users.forEach((users) => {
-        setRows((row) => [
-          ...row,
-          {
-            id: users._id,
-            postId: users.postId,
-            lastName: users.lastName,
-            email: users.email,
-            accountType: users.accountType,
-            // occupation: users.occupation,
-            status: users.status,
-          },
-        ]);
-      });
-    };
-
-    getUsers();
-  }, []);
-
-  console.log("rows", rows);
-  const token = useSelector((state) => state.adminState.adminToken);
-  const [users, setUsers] = useState([]);
-
-  const getUsers = async () => {
-    const response = await fetch("http://localhost:3001/admin/users", {
+  const getReports = async () => {
+    const response = await fetch("http://localhost:3001/admin/posts", {
       method: "GET",
       headers: { Authorization: `Bearer ${token}` },
     });
     const data = await response.json();
-    setUsers(data);
-    console.log(data);
+    setReports(data);
+    setLoading(true);
+    getReportsDetails()
   };
 
-  const blockUser = async (userId) => {
+  const getReportsDetails = () => {
+    const data = reports.map((report) => ({
+      postId: report._id,
+      reason: report.report.map((r) => r.content).join(", "),
+      count: report.report.length,
+      status: report.status,
+    }));
+    setRows(data);
+    setLoading(true)
+  };
+
+  const blockPost = async (postId) => {
     const response = await fetch(
-      `http://localhost:3001/admin/users/block/${userId}`,
+      `http://localhost:3001/admin/posts/block/${postId}`,
       {
         method: "PATCH",
         headers: { Authorization: `Bearer ${token}` },
       }
     );
     const data = await response.json();
-    setUsers(data);
+    console.log(data);
+    setReports(data);
+
+    setLoading(!loading);
   };
 
   useEffect(() => {
-    getUsers();
-  }, []);
+    getReports();
+  }, [loading]);
+
+  useEffect(() => {
+    if (loading) {
+      getReportsDetails();
+    }
+  }, [loading]);
 
   return (
     <Box sx={{ marginTop: "100px", marginLeft: "280px", marginRight: "25px" }}>
       <h1>POSTs</h1>
-      <h3>Posts Report Managenemt</h3>
+      <h3>Posts Report Management</h3>
 
       <Box sx={{ height: 400, width: "100%" }}>
         <DataGrid
-          rows={users}
-          columns={filteredColumns}
-          initialState={{
-            pagination: {
-              paginationModel: {
-                pageSize: 5,
-              },
-            },
-          }}
-          pageSizeOptions={[5]}
+          rows={rows}
+          columns={columns}
+          pageSize={5}
           checkboxSelection
           disableRowSelectionOnClick
-          components={{ Toolbar: GridToolbar }}
-          getRowId={(row) => row._id}
+          getRowId={(row) => row.postId}
         />
       </Box>
     </Box>
   );
 };
-export default PostManagement
 
-// import React from 'react'
-
-// function PostManagement() {
-//   return (
-//     <div>PostManagement</div>
-//   )
-// }
-
-// export default PostManagement
+export default PostManagement;
