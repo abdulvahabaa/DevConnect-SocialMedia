@@ -26,6 +26,7 @@ import {
   import { setPosts } from "state/userState";
   
   const MyPostWidget = ({ picturePath }) => {
+    console.log(picturePath);
     const dispatch = useDispatch();
     const [isImage, setIsImage] = useState(false);
     const [image, setImage] = useState(null);

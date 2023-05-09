@@ -4,19 +4,32 @@ import {
   LocationOnOutlined,
   WorkOutlineOutlined,
 } from "@mui/icons-material";
-import { Box, Typography, Divider, useTheme } from "@mui/material";
+import { Box, Typography, Divider, useTheme, IconButton } from "@mui/material";
 import UserImage from "components/user/UserImage";
 import FlexBetween from "components/user/FlexBetween";
 import WidgetWrapper from "components/user/WidgetWrapper";
 import { useSelector } from "react-redux";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import EditProfile from "components/user/EditProfile";
 
 const UserWidget = ({ userId, picturePath }) => {
+ 
+  const [isEditProfile, setIsEditProfile ] = useState(false);
+  // const ITEM_HEIGHT = 48;
+  const [anchorEl, setAnchorEl] = useState(null);
+  const open = Boolean(anchorEl);
+  const handleClick = (event) => {
+    setIsEditProfile(true)
+  };
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
   const [user, setUser] = useState(null);
   const { palette } = useTheme();
   const navigate = useNavigate();
   const token = useSelector((state) => state.userState.token);
+  const loggedInUser=useSelector((state)=>state.userState.user)
   const dark = palette.neutral.dark;
   const medium = palette.neutral.medium;
   const main = palette.neutral.main;
@@ -27,10 +40,12 @@ const UserWidget = ({ userId, picturePath }) => {
       headers: { Authorization: `Bearer ${token}` },
     });
     const data = await response.json();
+    console.log(data,"user")
     setUser(data);
   };
 
   useEffect(() => {
+    console.log(picturePath);
     getUser();
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
@@ -49,7 +64,18 @@ const UserWidget = ({ userId, picturePath }) => {
   } = user;
 
   return (
-    <WidgetWrapper>
+    <WidgetWrapper> 
+       {isEditProfile && (
+        <EditProfile
+          setIsEditProfile={setIsEditProfile}
+          firstName={firstName}
+          lastName={lastName}
+          location={location}
+          occupation={occupation}
+          isEdit={true}
+          userId={userId}
+        />
+      )}
       {/* FIRST ROW */}
       <FlexBetween
         gap="0.5rem"
@@ -57,7 +83,7 @@ const UserWidget = ({ userId, picturePath }) => {
         onClick={() => navigate(`/profile/${userId}`)}
       >
         <FlexBetween gap="1rem">
-          <UserImage image={picturePath} />
+          <UserImage image={user?.picturePath} />
           <Box>
             <Typography
               variant="h4"
@@ -72,10 +98,18 @@ const UserWidget = ({ userId, picturePath }) => {
             >
               {firstName} {lastName}
             </Typography>
-            <Typography color={medium}>{friends.length} friends</Typography>
+            <Typography color={medium}>{friends?.length} friends</Typography>
           </Box>
         </FlexBetween>
+   {  user._id === loggedInUser._id  && <IconButton  onClick={() => {
+                       handleClick() 
+                        setIsEditProfile(true);
+                     
+                        handleClose();
+                      }}>
+
         <ManageAccountsOutlined />
+        </IconButton>}
       </FlexBetween>
 
       <Divider />

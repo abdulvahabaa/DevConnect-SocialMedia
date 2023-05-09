@@ -28,7 +28,7 @@ const LoginPageAdmin = () => {
           Welcome to ADMIN DevConnect, the Social Media for Developers!
         </Typography>
         <Form />
-      </Box>
+      </Box> 
     </Box>
   );
 };

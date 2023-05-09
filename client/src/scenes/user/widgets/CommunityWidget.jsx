@@ -19,7 +19,7 @@ const CommunityWidget = () => {
   const token = useSelector((state) => state.userState.token);
   // const communityId =useSelector((state) => state.user.id)
   const communitiesData = useSelector((state) => state.userState.communities)
-
+console.log(communitiesData)
   const getCommunities= async ()=>{
     const response = await fetch(
       "http://localhost:3001/users/communities",
@@ -29,7 +29,6 @@ const CommunityWidget = () => {
       }
     );
     const data = await response.json();
-    console.log(data);
     dispatch(setCommunities({ communities: data }));
   }
   

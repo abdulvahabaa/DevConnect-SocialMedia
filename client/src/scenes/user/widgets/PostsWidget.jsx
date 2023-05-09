@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setPosts } from "state/userState";
 import PostWidget from "./PostWidget";
+import axios from "axios"
 
 const PostsWidget = ({ userId, isProfile = false }) => {
   const dispatch = useDispatch();
@@ -9,12 +10,11 @@ const PostsWidget = ({ userId, isProfile = false }) => {
   const token = useSelector((state) => state.userState.token);
 
   const getPosts = async () => {
-    const response = await fetch("http://localhost:3001/posts", {
+    const response = await axios.get("http://localhost:3001/posts", {
       method: "GET",
       headers: { Authorization: `Bearer ${token}` },
     });
-    const data = await response.json();
-    dispatch(setPosts({ posts: data }));
+    dispatch(setPosts({ posts: response.data }));
   };
 
   const getUserPosts = async () => {
@@ -30,16 +30,16 @@ const PostsWidget = ({ userId, isProfile = false }) => {
   };
 
   useEffect(() => {
-    if (isProfile) {
+    if (isProfile) {      
       getUserPosts();
-    } else {
+    } else {      
       getPosts();
     }
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
-    <>
-      {posts.map(
+    <div>
+      {Array.isArray(posts) && posts.map(
         ({
           _id,
           userId,
@@ -66,7 +66,7 @@ const PostsWidget = ({ userId, isProfile = false }) => {
           />
         )
       )}
-    </>
+    </div>
   );
 };
 

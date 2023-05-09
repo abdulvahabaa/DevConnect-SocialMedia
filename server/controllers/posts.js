@@ -1,26 +1,55 @@
 import Post from "../models/Post.js";
 import User from "../models/User.js";
+import { deleteFromS3, getFromS3, uploadTos3 } from "./s3bucket.js";
 
 /* CREATE */
 export const createPost = async (req, res) => {
   try {
-    const { userId, description, picturePath } = req.body;
+    const { userId, description } = req.body;
     const user = await User.findById(userId);
-    const newPost = new Post({
-      userId,
-      firstName: user.firstName,
-      lastName: user.lastName,
-      location: user.location,
-      description,
-      userPicturePath: user.picturePath,
-      picturePath,
-      likes: {},
-      comments: [],
-    });
-    await newPost.save();
+    if(req.file){
+      const image = await uploadTos3(req.file)
+      const newPost = new Post({
+        userId,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        location: user.location,
+        description,
+        userPicturePath: user.picturePath,
+        picturePath: image,
+        likes: {},
+        comments: [],
+      });
+      await newPost.save();
+    }else{
+      const newPost = new Post({
+        userId,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        location: user.location,
+        description,
+        userPicturePath: user.picturePath,
+        likes: {},
+        comments: [],
+      });
+      await newPost.save();
+    }
+   
 
-    const post = await Post.find().sort("-createdAt");
-    res.status(201).json(post);
+    const posts = await Post.find().sort("-createdAt");
+    const updatedPosts = [];
+
+    for (let i = 0; i < posts.length; i++) {
+      const post = posts[i];
+      const imageUrl = await getFromS3(post.picturePath);
+      const usrImageUrl = await getFromS3(post.userPicturePath);
+
+      post.set({ userPicturePath: usrImageUrl });
+      post.set({ picturePath: imageUrl });
+
+      updatedPosts.push(post.toObject());
+    }
+    res.status(201).json(updatedPosts);
   } catch (err) {
     res.status(409).json({ message: err.message });
   }
@@ -29,19 +58,43 @@ export const createPost = async (req, res) => {
 /* READ */
 export const getFeedPosts = async (req, res) => {
   try {
-    const post = await Post.find().sort("-createdAt");
-    await Post.updateMany({}) 
-    res.status(200).json(post);
+    const posts = await Post.find().sort("-createdAt");
+
+    const updatedPosts = [];
+
+    for (let post of posts) {
+      const userImageUrl = await getFromS3(post.userPicturePath);
+      if(post.picturePath){
+        const postImageUrl = await getFromS3(post.picturePath);
+        post.set({ picturePath: postImageUrl });
+        post.set({ userPicturePath: userImageUrl });
+        updatedPosts.push(post);
+      }else{
+        post.set({ userPicturePath: userImageUrl });
+        updatedPosts.push(post);
+      }
+    }
+    res.status(200).json(updatedPosts);
   } catch (err) {
     res.status(404).json({ message: err.message });
   }
 };
 
+
 export const getUserPosts = async (req, res) => {
   try {
     const { userId } = req.params;
-    const post = await Post.find({ userId });
-    res.status(200).json(post);
+    const posts = await Post.find({ userId });
+    const updatedPosts = [];
+
+    for (let post of posts) {
+      const userImageUrl = await getFromS3(post.userPicturePath);
+      const postImageUrl = await getFromS3(post.picturePath);
+      post.set({ picturePath: postImageUrl });
+      post.set({ userPicturePath: userImageUrl });
+      updatedPosts.push(post);
+    }
+    res.status(200).json(updatedPosts);
   } catch (err) {
     res.status(404).json({ message: err.message });
   }
@@ -76,7 +129,6 @@ export const likePost = async (req, res) => {
 /* Delete */
 export const deletePost= async (req,res) => {
   try {
-
     const { id } = req.params;
     const del = await Post.findByIdAndDelete(id)
     res.status(200).json(del);
@@ -88,10 +140,17 @@ export const deletePost= async (req,res) => {
 export const editPost = async (req, res) => {
   console.log("Edit post Api")
   try {
-    console.log(req.body)
     const { postId, description, picturePath } = req.body;
-    const edited= await  Post.findByIdAndUpdate(postId,{description: description, picturePath: picturePath},{new:true})
-    console.log(edited)
+    const findOldImageUrl =await Post.findById(postId)
+   await deleteFromS3(findOldImageUrl.picturePath);
+    const updateNewImageUrl = await uploadTos3(req.file)
+    console.log(updateNewImageUrl);
+    
+
+
+    const edited= await  Post.findByIdAndUpdate(postId,{description: description, picturePath: updateNewImageUrl},{new:true})
+    console.log(edited);
+    edited.set({ picturePath: edited.postImageUrl });
     res.status(200).json(edited);
     
   } catch (err) {

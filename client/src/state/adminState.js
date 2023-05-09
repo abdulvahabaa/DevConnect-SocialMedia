@@ -3,6 +3,7 @@ const initialState = {
     adminMode: "light",
     admin: null,
     adminToken: null,
+    dashboard:{usersCount:null,postsCount:null,reportsCount:null}
     // posts: [],
     // communities:[],
   };
@@ -22,12 +23,18 @@ const initialState = {
         state.admin = null;
         state.adminToken = null;
       },
+
+      setAllCount: (state,action)=>{
+        state.dashboard.usersCount = action.payload.dashboard.usersCount
+        state.dashboard.reportsCount = action.payload.dashboard.reportsCount
+        state.dashboard.postsCount = action.payload.dashboard.postsCount
+      }
       
   
     },
   }
   );
   
-  export const { setAdminMode, setAdminLogin, setAdminLogout, 
+  export const { setAdminMode, setAdminLogin, setAdminLogout,setAllCount 
  } = authSlice.actions;
   export default authSlice.reducer;
