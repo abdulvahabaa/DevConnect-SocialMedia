@@ -17,6 +17,7 @@ import * as yup from "yup";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { setAdminLogin } from "state/adminState";
+import BASE_URL from "utils/BASE_URL";
 // import Dropzone from "react-dropzone";
 // import FlexBetween from "components/user/FlexBetween";
 // import { PersonRemoveAlt1 } from "@mui/icons-material";
@@ -51,7 +52,7 @@ const Form = () => {
  
 
   const login = async (values, onSubmitProps) => {
-    const loggedInResponse = await fetch("http://localhost:3001/admin/login", {
+    const loggedInResponse = await fetch(`${BASE_URL}/admin/login`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(values),

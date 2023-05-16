@@ -55,14 +55,14 @@ const storage = multer.memoryStorage()
 const upload = multer({ storage:storage })
 
 /* ROUTES WITH FILES */
-app.post("/auth/register", upload.single("picture"), register);
+app.post("/api/auth/register", upload.single("picture"), register);
 // app.post("/posts", verifyToken, upload.single("picture"), createPost);
 
 /* ROUTES */
-app.use("/auth", authRoutes);
-app.use("/users", userRoutes);
-app.use("/posts", postRoutes);
-app.use("/admin",adminRoutes)
+app.use("/api/auth", authRoutes);
+app.use("/api/users", userRoutes);
+app.use("/api/posts", postRoutes);
+app.use("/api/admin",adminRoutes)
 /* MONGOOSE SETUP */
 const PORT = process.env.PORT || 6001;
 mongoose

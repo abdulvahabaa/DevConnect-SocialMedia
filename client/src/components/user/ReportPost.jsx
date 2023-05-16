@@ -92,6 +92,7 @@
 import React, { useEffect, useState } from 'react'
 import { Box, Button, FormControl, FormControlLabel, FormLabel, Modal, Radio, RadioGroup } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
+import BASE_URL from 'utils/BASE_URL';
 // import { reportPost } from 'api/users';
 
 
@@ -145,7 +146,7 @@ function ReportPost({ isReported = false, setIsReport, postId,postUserId }) {
    const reportPost = async (formData, token)=>{
       console.log(formData);
       console.log(token);
-      let response = await fetch(`http://localhost:3001/posts/report`, {
+      let response = await fetch(`${BASE_URL}/posts/report`, {
         method: "PATCH",
         headers: {
           Authorization: `Bearer ${token}`

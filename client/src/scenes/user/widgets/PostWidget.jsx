@@ -17,12 +17,15 @@ import {
 import EditPost from "components/user/EditPost";
 import DeletePost from "components/user/DeletePost";
 import ReportPost from "components/user/ReportPost";
+
 import FlexBetween from "components/user/FlexBetween";
 import Friend from "components/user/Friend";
 import WidgetWrapper from "components/user/WidgetWrapper";
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setPost,} from "state/userState";
+import BASE_URL from "utils/BASE_URL";
+import CommentPost from "components/user/CommentBox";
 
 const PostWidget = ({
   
@@ -51,6 +54,7 @@ const PostWidget = ({
   const [isUpdate, setIsUpdate] = useState(false);
   const [isDelete, setIsDelete] = useState(false);
   const [isReport,setIsReport] = useState(false)
+  const [isComment,setIsComment] = useState(false);
   const [isComments, setIsComments] = useState(false);
   const dispatch = useDispatch();
   const token = useSelector((state) => state.userState.token);
@@ -65,7 +69,7 @@ const PostWidget = ({
   const primary = palette.primary.main;
 
   const patchLike = async () => {
-    const response = await fetch(`http://localhost:3001/posts/${postId}/like`, {
+    const response = await fetch(`${BASE_URL}/posts/${postId}/like`, {
       method: "PATCH",
       headers: {
         Authorization: `Bearer ${token}`,
@@ -108,6 +112,16 @@ const PostWidget = ({
         isReported={true}
         />
       )}
+      {isComment && (
+       <Box >
+         <CommentPost 
+        setIsComment={setIsComment}
+        postId={postId}
+        postUserId={postUserId}
+        isCmnt={true}
+        />
+       </Box>
+      )}
 
       <Friend
         friendId={postUserId}
@@ -141,7 +155,11 @@ const PostWidget = ({
           </FlexBetween>
 
           <FlexBetween gap="0.3rem">
-            <IconButton onClick={() => setIsComments(!isComments)}>
+            <IconButton  onClick={() => {
+                        setIsComment(true);
+                     
+                        handleClose();
+                      }}>
               <ChatBubbleOutlineOutlined />
             </IconButton>
             <Typography>{comments.length}</Typography>

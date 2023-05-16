@@ -32,6 +32,7 @@ import {
 
 import { useDispatch, useSelector } from "react-redux";
 import { setPost,  } from "state/userState";
+import BASE_URL from "utils/BASE_URL";
 // import finalPropsSelectorFactory from "react-redux/es/connect/selectorFactory";
 
 const style = {
@@ -87,7 +88,7 @@ function EditPost({
       formData.append("picturePath", image.name);
     }
 
-    const response = await fetch(`http://localhost:3001/posts/edit`, {
+    const response = await fetch(`${BASE_URL}/posts/edit`, {
       method: "PUT",
       headers: { Authorization: `Bearer ${token}` },
       body: formData,

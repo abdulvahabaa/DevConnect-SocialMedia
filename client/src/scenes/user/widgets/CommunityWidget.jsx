@@ -5,6 +5,7 @@ import WidgetWrapper from "components/user/WidgetWrapper";
 import { useEffect } from "react";
 import { useDispatch,useSelector } from "react-redux";
 import { setCommunities } from "state/userState";
+import BASE_URL from "utils/BASE_URL";
 
 
 
@@ -22,7 +23,7 @@ const CommunityWidget = () => {
 console.log(communitiesData)
   const getCommunities= async ()=>{
     const response = await fetch(
-      "http://localhost:3001/users/communities",
+      `${BASE_URL}/users/communities`,
       {
         method: "GET",
         headers: { Authorization: `Bearer ${token}` },

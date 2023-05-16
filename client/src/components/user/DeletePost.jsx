@@ -9,6 +9,7 @@ import Slide from "@mui/material/Slide";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setPosts } from "state/userState";
+import BASE_URL from "utils/BASE_URL";
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
@@ -36,7 +37,7 @@ export default function DeletePost({
 
   const handleDelete = async () => {
     const response = await fetch(
-      `http://localhost:3001/posts/${postId}/deletePost`,
+      `${BASE_URL}/posts/${postId}/deletePost`,
       {
         method: "DELETE",
         headers: {

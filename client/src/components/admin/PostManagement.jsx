@@ -5,7 +5,7 @@ import { useSelector } from "react-redux";
 import { useState } from "react";
 import { useEffect } from "react";
 import ReportPost from "components/user/ReportPost";
-
+import BASE_URL from "utils/BASE_URL";
 const PostManagement = () => {
   const token = useSelector((state) => state.adminState.adminToken);
   const [reports, setReports] = useState([]);
@@ -37,7 +37,7 @@ const PostManagement = () => {
   ];
 
   const getReports = async () => {
-    const response = await fetch("http://localhost:3001/admin/posts", {
+    const response = await fetch(`${BASE_URL}/admin/posts`, {
       method: "GET",
       headers: { Authorization: `Bearer ${token}` },
     });
@@ -60,7 +60,7 @@ const PostManagement = () => {
 
   const blockPost = async (postId) => {
     const response = await fetch(
-      `http://localhost:3001/admin/posts/block/${postId}`,
+      `${BASE_URL}/admin/posts/block/${postId}`,
       {
         method: "PATCH",
         headers: { Authorization: `Bearer ${token}` },

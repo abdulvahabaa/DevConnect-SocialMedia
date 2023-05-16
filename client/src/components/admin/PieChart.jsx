@@ -2,6 +2,7 @@ import { ResponsivePie } from '@nivo/pie'
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { setAllCount } from 'state/adminState';
+import BASE_URL from 'utils/BASE_URL';
 
 
 const PieChart = ()=>{
@@ -13,7 +14,7 @@ const PieChart = ()=>{
 
     const getUserPostReportCount = async () => {
         
-        const response = await fetch("http://localhost:3001/admin/piechart", {
+        const response = await fetch(`${BASE_URL}/admin/piechart`, {
           method: "GET",
           headers: { Authorization: `Bearer ${token}` },
         });

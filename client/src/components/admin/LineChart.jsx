@@ -1,6 +1,7 @@
 import { ResponsiveLine } from '@nivo/line'
 import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
+import BASE_URL from 'utils/BASE_URL';
 
 
 
@@ -16,7 +17,7 @@ const LineChart = ()=>{
 
     const getDailyReportsCount = async () => {
       
-        const response = await fetch("http://localhost:3001/admin/linechart", {
+        const response = await fetch(`${BASE_URL}/admin/linechart`, {
           method: "GET",
           headers: { Authorization: `Bearer ${token}` },
         });

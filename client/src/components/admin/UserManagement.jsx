@@ -4,6 +4,7 @@ import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import { useSelector } from "react-redux";
 import { useState } from "react";
 import { useEffect } from "react";
+import BASE_URL from "utils/BASE_URL";
 
 
 
@@ -63,7 +64,7 @@ const UserManagement = () => {
   const [users, setUsers] = useState([]);
 
   const getUsers = async () => {
-    const response = await fetch("http://localhost:3001/admin/users", {
+    const response = await fetch(`${BASE_URL}/admin/users`, {
       method: "GET",
       headers: { Authorization: `Bearer ${token}` },
     });
@@ -73,7 +74,7 @@ const UserManagement = () => {
   };
 
   const blockUser = async (userId) => {
-    const response = await fetch(`http://localhost:3001/admin/users/block/${userId}`, {
+    const response = await fetch(`${BASE_URL}/admin/users/block/${userId}`, {
       method: "PATCH",
       headers: { Authorization: `Bearer ${token}` },
     });

@@ -24,6 +24,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { setMode, setLogout } from "state/userState";
 import { useNavigate } from "react-router-dom";
 import FlexBetween from "components/user/FlexBetween";
+import VoiceChatOutlinedIcon from '@mui/icons-material/VoiceChatOutlined';
 
 const Navbar = () => {
   const [isMobileMenuToggled, setIsMobileMenuToggled] = useState(false);
@@ -83,6 +84,8 @@ const Navbar = () => {
               <LightMode sx={{ color: dark, fontSize: "25px" }} />
             )}
           </IconButton>
+
+          <VoiceChatOutlinedIcon sx={{ fontSize: "25px" }} />
           <Message sx={{ fontSize: "25px" }} />
           <Notifications sx={{ fontSize: "25px" }} />
           <Help sx={{ fontSize: "25px" }} />
@@ -158,6 +161,8 @@ const Navbar = () => {
                 <LightMode sx={{ color: dark, fontSize: "25px" }} />
               )}
             </IconButton>
+
+            <VoiceChatOutlinedIcon sx={{ fontSize: "25px" }} />
             <Message sx={{ fontSize: "25px" }} />
             <Notifications sx={{ fontSize: "25px" }} />
             <Help sx={{ fontSize: "25px" }} />

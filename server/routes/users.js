@@ -6,7 +6,7 @@ import multer from "multer";
 import {
   getUser,
   getUserFriends,
-  addRemoveFriend,
+  addRemoveFriend, 
   getCommunities,
   editProfile,
 } from "../controllers/users.js";

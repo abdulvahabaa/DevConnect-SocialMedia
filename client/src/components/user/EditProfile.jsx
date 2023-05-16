@@ -13,6 +13,7 @@ import { TextField, Typography } from "@mui/material";
 import { useState } from "react";
 import { Formik } from "formik";
 import * as yup from "yup";
+import BASE_URL from "utils/BASE_URL";
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
@@ -59,7 +60,7 @@ export default function EditProfile({
   const handleEditUser = async () => {
     
     const response = await fetch(
-      `http://localhost:3001/users/profile/${userId}/editProfile`,
+      `${BASE_URL}/users/profile/${userId}/editProfile`,
       {
         method: "PUT",
         headers: {
@@ -171,10 +172,10 @@ export default function EditProfile({
                 // value={confirmPassword}
                 onChange={(e) => handleChange(e)}
               />
-              <Typography sx={{ mb: 2 }}>
+              {/* <Typography sx={{ mb: 2 }}>
                 Do you want to change the profile Image?
               </Typography>
-              <input sx type="file" accept="image/*" />
+              <input sx type="file" accept="image/*" /> */}
             </form>
           </DialogContent>
         </DialogContent>
