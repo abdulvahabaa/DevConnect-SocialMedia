@@ -7,7 +7,6 @@
 - [DevConnect-SocialMedia](#devconnect-socialmedia)
   - [Table of Contents](#table-of-contents)
     - [Video Demo](#video-demo)
-    <!-- - [Screenshots](#screenshots) -->
   - [Features](#features)
   - [Technologies Used](#technologies-used)
   - [Installation and Setup](#installation-and-setup)
@@ -15,9 +14,8 @@
     - [Environment Setup](#environment-setup)
     - [Running the Application](#running-the-application)
   - [Usage](#usage)
-    - [Swagger-API-Documentation](#swagger-api-Documetation)
+    - [Swagger API Documentation](#swagger-api-documentation)
     - [APIs](#apis)
-
   - [Links](#links)
 
 ### Video Demo
@@ -32,9 +30,7 @@
 ![User Profile](link-to-user-profile-screenshot)
 *User profile page with customizable options* -->
 
-
 ## Features
-<!-- ### User Guide -->
 
 - **Sign Up/Sign In**: Create an account or log in to start using the platform.
 - **Profile Management**: Customize your profile, add a bio, and upload a profile picture.
@@ -57,7 +53,9 @@
 - **Hosting**: AWS EC2, Nginx
 - **Storage**: AWS S3 Bucket
 - **Authentication**: JWT
+
 ## Installation and Setup
+
 ### Prerequisites
 
 Before you begin, ensure you have met the following requirements:
@@ -72,68 +70,51 @@ Before you begin, ensure you have met the following requirements:
 
     ```bash
     git clone https://github.com/yourusername/DevConnect-SocialMedia.git
-   
+    cd DevConnect-SocialMedia
     ```
+
+2. Install dependencies for the server side:
+
     ```bash
-     cd DevConnect-SocialMedia
-    ```
-
-2. Install dependencies:
-  > correct the server side 
-  ```bash
     cd server
-  ```
-
-  ```bash
     npm install
-  ```
+    ```
 
 3. Create an `.env` file in the server directory and add the following:
 
-```env
+    ```env
+    MONGO_URL="YOUR_MONGODB_URI"
+    JWT_SECRET="YOUR_JWT_SECRET"
+    PORT=3001
+    ADMIN_EMAIL="admin@gmail.com"
+    ADMIN_PASSWORD="admin"
+    ADMIN_JWT_SECRET="YOUR_ADMIN_JWT_SECRET"
+    BUCKET_NAME='YOUR_S3_BUCKET_NAME'
+    BUCKET_REGION='YOUR_BUCKET_REGION'
+    ACCESS_KEY='YOUR_AWS_ACCESS_KEY_ID'
+    SECRET_ACCESS_KEY='YOUR_AWS_SECRET_ACCESS_KEY'
+    ```
 
-  MONGO_URL="YOUR_MONGODB_URI"
+4. Install dependencies for the client side:
 
-  JWT_SECRET="YOUR_JWT_SECRET"
-
-  PORT=3001
-
-  ADMIN_EMAIL="admin@gmail.com"
-
-  ADMIN_PASSWORD="admin"
-
-  ADMIN_JWT_SECRET="YOUR_ADMIN_JWT_SECRET"
-
-  BUCKET_NAME='YOUR_S3_BUCKET_NAME'
-
-  BUCKET_REGION='YOUR_BUCKET_REGION'
-
-  ACCESS_KEY='YOUR_AWS_ACCESS_KEY_ID'
-
-  SECRET_ACCESS_KEY='YOUR_AWS_SECRET_ACCESS_KEY'
-
-```
-> install dependnscy on the client side
-
-```bash
-cd client
-```
-```bash
-npm install
-```
-
+    ```bash
+    cd ../client
+    npm install
+    ```
 
 ### Running the Application
 
 1. Start the backend server:
 
     ```bash
+    cd ../server
     npm run server
     ```
 
 2. Start the frontend development server:
 
     ```bash
+    cd ../client
     npm start
     ```
 
@@ -141,23 +122,21 @@ npm install
 
 ## Usage
 
-### Swagger-API-Documetation
+### Swagger API Documentation
+
+<!-- Provide a link to your Swagger API documentation here -->
 
 ### APIs
 
-<iframe src="https://www.linkedin.com/embed/feed/update/urn:li:ugcPost:7069046813449719808" height="1206" width="504" frameborder="0" allowfullscreen="" title="Embedded post"></iframe>
-
-
+<!-- List your APIs here -->
 
 ## Links
 
 For further information, feel free to reach out:
 
-- [Project Website](www.devconnect.website) : `expierd because free preiod is over`
-- GitHub Repository: [DevConnect-SocialMedia](link-to-github-repo)
+- [Project Website](http://www.devconnect.website) *(expired because free period is over)*
+- GitHub Repository: [DevConnect-SocialMedia](https://github.com/yourusername/DevConnect-SocialMedia)
 
 ---
 
 Thank you for visiting DevConnect-SocialMedia! Happy coding!
-
-
