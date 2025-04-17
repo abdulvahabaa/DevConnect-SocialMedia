@@ -7,8 +7,8 @@ import {
   addRemoveFriend,
   getCommunities,
   editProfile,
-} from "../controllers/users.js";
-import { verifyToken } from "../middleware/auth.js";
+} from "../controllers/users.mjs";
+import { verifyToken } from "../middleware/auth.mjs";
 
 const router = express.Router();
 

@@ -12,8 +12,8 @@ import {
   postComment,
   replyComment,
   sendReport,
-} from "../controllers/posts.js";
-import { verifyToken } from "../middleware/auth.js";
+} from "../controllers/posts.mjs";
+import { verifyToken } from "../middleware/auth.mjs";
 import multer from "multer";
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });

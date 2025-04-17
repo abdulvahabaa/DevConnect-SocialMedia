@@ -7,9 +7,9 @@ import {
   getReports,
   getUsers,
   userAndPostCount,
-} from "../controllers/admin.js";
+} from "../controllers/admin.mjs";
 
-import { verifyToken } from "../middleware/adminAuth.js";
+import { verifyToken } from "../middleware/adminAuth.mjs";
 
 const router = express.Router();
 

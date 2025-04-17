@@ -1,5 +1,5 @@
-import User from "../models/User.js";
-import { getFromS3 } from "./s3bucket.js";
+import User from "../models/User.mjs";
+import { getFromS3 } from "../utils/s3bucket.mjs";
 import bcrypt from "bcrypt";
 
 /* READ */

@@ -1,7 +1,7 @@
-import Post from "../models/Post.js";
-import { Comment } from "../models/comment.js";
-import User from "../models/User.js";
-import { deleteFromS3, getFromS3, uploadTos3 } from "./s3bucket.js";
+import Post from "../models/Post.mjs";
+import { Comment } from "../models/Comment.mjs";
+import User from "../models/User.mjs";
+import { deleteFromS3, getFromS3, uploadTos3 } from "../utils/s3bucket.mjs";
 
 /* CREATE */
 export const createPost = async (req, res) => {

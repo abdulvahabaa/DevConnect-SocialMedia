@@ -1,7 +1,7 @@
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-import User from "../models/User.js";
-import { getFromS3, uploadTos3 } from "./s3bucket.js";
+import User from "../models/User.mjs";
+import { getFromS3, uploadTos3 } from "../utils/s3bucket.mjs";
 
 /* REGISTER USER */
 export const register = async (req, res) => {
