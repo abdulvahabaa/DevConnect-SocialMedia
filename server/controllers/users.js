@@ -24,10 +24,26 @@ export const getUserFriends = async (req, res) => {
       user.friends.map((id) => User.findById(id))
     );
     const formattedFriends = await Promise.all(
-      friends.map(async ({ _id, firstName, lastName, occupation, location, picturePath }) => {
-        const userImageUrl = await getFromS3(picturePath);
-        return { _id, firstName, lastName, occupation, location, picturePath: userImageUrl };
-      })
+      friends.map(
+        async ({
+          _id,
+          firstName,
+          lastName,
+          occupation,
+          location,
+          picturePath,
+        }) => {
+          const userImageUrl = await getFromS3(picturePath);
+          return {
+            _id,
+            firstName,
+            lastName,
+            occupation,
+            location,
+            picturePath: userImageUrl,
+          };
+        }
+      )
     );
     res.status(200).json(formattedFriends);
   } catch (err) {
@@ -44,7 +60,9 @@ export const getCommunities = async (req, res) => {
         const communityImageUrl = await getFromS3(community.picturePath);
         community.picturePath = communityImageUrl;
       } catch (error) {
-        console.error(`Error getting image for community ${community._id}: ${error.message}`);
+        console.error(
+          `Error getting image for community ${community._id}: ${error.message}`
+        );
       }
     }
     res.status(200).json(communities);
@@ -53,7 +71,6 @@ export const getCommunities = async (req, res) => {
     res.status(404).json({ message: err.message });
   }
 };
-
 
 /* UPDATE */
 export const addRemoveFriend = async (req, res) => {
@@ -89,21 +106,21 @@ export const addRemoveFriend = async (req, res) => {
 };
 
 export const editProfile = async (req, res) => {
-  console.log("editProfile Api called>>>>>>>>>>>")
+  console.log("editProfile Api called>>>>>>>>>>>");
 
   try {
-    console.log("req.body",req.body)
+    console.log("req.body", req.body);
     const { id } = req.params;
-    console.log(id)
+    console.log(id);
     const user = await User.findById(id);
-    console.log(user)
+    console.log(user);
 
     // compare old password with stored hash
     const isMatch = await bcrypt.compare(req.body.oldPassword, user.password);
-    console.log("isMatdh>>>>>>>>>>>",isMatch)
+    console.log("isMatdh>>>>>>>>>>>", isMatch);
 
     if (!isMatch) {
-      return res.status(400).json({ message: 'Invalid old password' });
+      return res.status(400).json({ message: "Invalid old password" });
     }
 
     // generate new hash for the new password (if provided)
@@ -114,17 +131,17 @@ export const editProfile = async (req, res) => {
 
     // update user document
     const updatedUser = await User.findByIdAndUpdate(
-      id, 
-      { 
+      id,
+      {
         firstName: req.body.firstName,
         lastName: req.body.lastName,
         location: req.body.location,
         occupation: req.body.occupation,
-        password: newHashedPassword
+        password: newHashedPassword,
       },
       { new: true } // set to return the updated document
     );
-    console.log(updatedUser)
+    console.log(updatedUser);
     const userImageUrl = await getFromS3(updatedUser.picturePath);
     updatedUser.set({ picturePath: userImageUrl });
     res.status(200).json(updatedUser);
@@ -132,8 +149,3 @@ export const editProfile = async (req, res) => {
     res.status(404).json({ message: err.message });
   }
 };
-
-
-
-
-

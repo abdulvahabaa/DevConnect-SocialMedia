@@ -33,18 +33,18 @@ const UserSchema = new mongoose.Schema(
       type: Array,
       default: [],
     },
-    accountType:{
-      type:String,
-      required:true,
+    accountType: {
+      type: String,
+      required: true,
     },
     location: String,
     occupation: String,
     viewedProfile: Number,
     impressions: Number,
-    status:{
-      type:Boolean,
-      default:true,
-    }
+    status: {
+      type: Boolean,
+      default: true,
+    },
   },
   { timestamps: true }
 );

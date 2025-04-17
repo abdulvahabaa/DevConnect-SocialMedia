@@ -23,7 +23,6 @@ export const adminLogin = async (req, res) => {
 
 export const getUsers = async (req, res) => {
   try {
-    
     const users = await User.find().sort("-createdAt");
     // console.log(users)
     res.status(200).json(users);
@@ -55,7 +54,7 @@ export const getReports = async (req, res) => {
     const reports = await Post.find({
       $expr: { $gt: [{ $size: "$report" }, 0] },
     }).sort("-createdAt");
-    console.log("",reports)
+    console.log("", reports);
     res.status(200).json(reports);
   } catch (error) {
     res.status(404).json({ message: error.message });
@@ -75,7 +74,7 @@ export const blockPost = async (req, res) => {
         status: false,
         description: null,
         likes: new Map(),
-        comments:[],
+        comments: [],
       },
       { new: true }
     );
@@ -88,7 +87,7 @@ export const blockPost = async (req, res) => {
     res.status(404).json({ message: error.message });
   }
 };
- 
+
 export const userAndPostCount = async (req, res) => {
   try {
     const usersCount = await User.countDocuments();
@@ -105,7 +104,7 @@ export const userAndPostCount = async (req, res) => {
 };
 
 export const dailyReports = async (req, res) => {
-  console.log("api called Backend here")
+  console.log("api called Backend here");
   try {
     const lineChartUsersData = await User.aggregate([
       {
@@ -178,12 +177,9 @@ export const dailyReports = async (req, res) => {
     ]);
     console.log("lineChartReporsData", lineChartReportsData);
 
-    res.json({lineChartReportsData,lineChartPostsData,lineChartUsersData})
-
+    res.json({ lineChartReportsData, lineChartPostsData, lineChartUsersData });
   } catch (error) {
     console.error(error);
     res.status(500).send("Server error");
   }
-}
-
-
+};

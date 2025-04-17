@@ -17,8 +17,8 @@ const postSchema = mongoose.Schema(
     location: String,
     description: String,
     picturePath: {
-      type:String,
-      default:null,
+      type: String,
+      default: null,
     },
     userPicturePath: String,
     likes: {
@@ -31,21 +31,20 @@ const postSchema = mongoose.Schema(
     },
     commentCount: {
       type: Number,
-      default: 0
+      default: 0,
     },
     report: {
       type: Array,
-      default: []
+      default: [],
     },
     status: {
       type: Boolean,
-      default: true
+      default: true,
     },
     edited: {
       type: Boolean,
-      default: false
-    }
-  
+      default: false,
+    },
   },
   { timestamps: true }
 );

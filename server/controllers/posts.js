@@ -8,8 +8,8 @@ export const createPost = async (req, res) => {
   try {
     const { userId, description } = req.body;
     const user = await User.findById(userId);
-    if(req.file){
-      const image = await uploadTos3(req.file)
+    if (req.file) {
+      const image = await uploadTos3(req.file);
       const newPost = new Post({
         userId,
         firstName: user.firstName,
@@ -22,7 +22,7 @@ export const createPost = async (req, res) => {
         comments: [],
       });
       await newPost.save();
-    }else{
+    } else {
       const newPost = new Post({
         userId,
         firstName: user.firstName,
@@ -35,7 +35,6 @@ export const createPost = async (req, res) => {
       });
       await newPost.save();
     }
-   
 
     const posts = await Post.find().sort("-createdAt");
     const updatedPosts = [];
@@ -64,19 +63,17 @@ export const getFeedPosts = async (req, res) => {
     const updatedPosts = [];
 
     for (let post of posts) {
-
       if (!post.status) {
         continue;
       }
 
       const userImageUrl = await getFromS3(post.userPicturePath);
-      if(post.picturePath){
+      if (post.picturePath) {
         const postImageUrl = await getFromS3(post.picturePath);
         post.set({ picturePath: postImageUrl });
         post.set({ userPicturePath: userImageUrl });
         updatedPosts.push(post);
-      }else{
-
+      } else {
         post.set({ userPicturePath: userImageUrl });
         updatedPosts.push(post);
       }
@@ -86,7 +83,6 @@ export const getFeedPosts = async (req, res) => {
     res.status(404).json({ message: err.message });
   }
 };
-
 
 export const getUserPosts = async (req, res) => {
   try {
@@ -112,7 +108,6 @@ export const likePost = async (req, res) => {
   try {
     const { id } = req.params;
     const { userId } = req.body;
-
 
     const post = await Post.findById(id);
     const isLiked = post.likes.get(userId);
@@ -140,185 +135,195 @@ export const likePost = async (req, res) => {
 };
 
 /* Delete */
-export const deletePost= async (req,res) => {
+export const deletePost = async (req, res) => {
   try {
     const { id } = req.params;
-    const del = await Post.findByIdAndDelete(id)
+    const del = await Post.findByIdAndDelete(id);
     res.status(200).json(del);
   } catch (err) {
     res.status(404).json({ message: err.message });
   }
-}
+};
 
 export const editPost = async (req, res) => {
-  console.log("Edit post Api")
+  console.log("Edit post Api");
   try {
     const { postId, description, picturePath } = req.body;
-    const findOldImageUrl =await Post.findById(postId)
-   await deleteFromS3(findOldImageUrl.picturePath);
-    const updateNewImageUrl = await uploadTos3(req.file)
+    const findOldImageUrl = await Post.findById(postId);
+    await deleteFromS3(findOldImageUrl.picturePath);
+    const updateNewImageUrl = await uploadTos3(req.file);
     console.log(updateNewImageUrl);
-    
 
-
-    const edited= await  Post.findByIdAndUpdate(postId,{description: description, picturePath: updateNewImageUrl},{new:true})
+    const edited = await Post.findByIdAndUpdate(
+      postId,
+      { description: description, picturePath: updateNewImageUrl },
+      { new: true }
+    );
     console.log(edited);
     edited.set({ picturePath: edited.postImageUrl });
     res.status(200).json(edited);
-    
   } catch (err) {
     res.status(404).json({ message: err.message });
   }
 };
 
 export const sendReport = async (req, res) => {
-  console.log("api called")
+  console.log("api called");
   try {
-    
-    console.log(req.body)
+    console.log(req.body);
     const { postId, userId, content } = req.body;
     const reportObj = { content, userId };
-    const reports = await Post.findByIdAndUpdate(postId, { $push: { report: reportObj } });
-    res.status(200).json(reports)
+    const reports = await Post.findByIdAndUpdate(postId, {
+      $push: { report: reportObj },
+    });
+    res.status(200).json(reports);
   } catch (error) {
     console.error(error);
-    res.status(500).send('An error occurred while sending the report.');
+    res.status(500).send("An error occurred while sending the report.");
   }
 };
 
 export const postComment = async (req, res) => {
-  console.log("HEllo HEre")
+  console.log("HEllo HEre");
   try {
-      const {postId} = req.params;
-      console.log("heyyy reached");
-      const { comment, userId } = req.body;
-      console.log(req.body);
-      let user = await User.findById(userId).select('-password')
+    const { postId } = req.params;
+    console.log("heyyy reached");
+    const { comment, userId } = req.body;
+    console.log(req.body);
+    let user = await User.findById(userId).select("-password");
 
-      const postComment = await new Comment({
-          comment: comment,
-          post: postId,
-          user: userId,
-      }).save();
+    const postComment = await new Comment({
+      comment: comment,
+      post: postId,
+      user: userId,
+    }).save();
 
-    
-      postComment.user = user
-      const userImageUrl = await getFromS3(postComment.user.picturePath);
-      postComment.user.set({ picturePath: userImageUrl });
-      console.log("postComment");
-      console.log(postComment);
-      console.log("postComment");
-      res.status(200).json(postComment)
+    postComment.user = user;
+    const userImageUrl = await getFromS3(postComment.user.picturePath);
+    postComment.user.set({ picturePath: userImageUrl });
+    console.log("postComment");
+    console.log(postComment);
+    console.log("postComment");
+    res.status(200).json(postComment);
   } catch (error) {
-      res.status(400).json({ message: error.mssage })
-
+    res.status(400).json({ message: error.mssage });
   }
-}
-
-
+};
 
 export const getPostComments = async (req, res) => {
-  console.log("HELLO MY DEAR FRIEND")
+  console.log("HELLO MY DEAR FRIEND");
   try {
-      console.log("reached");
-      const { postId } = req.params;
-      console.log(postId);
-      const comments = await Comment.find({ post: postId, parentComment: {$exists: false}}).populate('user', '-password').sort('-createdAt').lean()
-      console.log(comments);
-      for(let comment of comments){
-        console.log("PicturePath HEre",comment.user.picturePath)
-        const userImageUrl = await getFromS3(comment.user.picturePath);
-        console.log("userImageUrl",userImageUrl)
-        comment.user.picturePath = userImageUrl 
+    console.log("reached");
+    const { postId } = req.params;
+    console.log(postId);
+    const comments = await Comment.find({
+      post: postId,
+      parentComment: { $exists: false },
+    })
+      .populate("user", "-password")
+      .sort("-createdAt")
+      .lean();
+    console.log(comments);
+    for (let comment of comments) {
+      console.log("PicturePath HEre", comment.user.picturePath);
+      const userImageUrl = await getFromS3(comment.user.picturePath);
+      console.log("userImageUrl", userImageUrl);
+      comment.user.picturePath = userImageUrl;
 
-        console.log("comment.user.picturePath Here",comment.user.picturePath )
-      }
-     
-      // console.log(comments);
-      res.status(200).json(comments)
+      console.log("comment.user.picturePath Here", comment.user.picturePath);
+    }
+
+    // console.log(comments);
+    res.status(200).json(comments);
   } catch (error) {
-      res.status(400).json({ error: error.message });
+    res.status(400).json({ error: error.message });
   }
-}
+};
 
 export const getReplyComments = async (req, res) => {
   try {
-      const { parentId } = req.params;
-      console.log(parentId);
-      const replyComments = await Comment.find({ parentComment: parentId }).populate('replies').populate('user', '-password').sort('-createdAt').lean()
-      console.log(replyComments);
+    const { parentId } = req.params;
+    console.log(parentId);
+    const replyComments = await Comment.find({ parentComment: parentId })
+      .populate("replies")
+      .populate("user", "-password")
+      .sort("-createdAt")
+      .lean();
+    console.log(replyComments);
 
-      res.status(200).json(replyComments);
+    res.status(200).json(replyComments);
   } catch (error) {
-      res.status(400).json({ error: error.message })
+    res.status(400).json({ error: error.message });
   }
-}
+};
 
 export const replyComment = async (req, res) => {
   try {
-      const { postId, parentId, reply, userId } = req.body;
-      console.log(req.body);
-      let user = await User.findById(userId).select('-password')
-      const replyComment = new Comment({
-          comment: reply,
-          parentComment: parentId,
-          post: postId,
-          user: userId
-      })
-      await replyComment.save();
-      replyComment.user = user;
-      console.log(replyComment);
+    const { postId, parentId, reply, userId } = req.body;
+    console.log(req.body);
+    let user = await User.findById(userId).select("-password");
+    const replyComment = new Comment({
+      comment: reply,
+      parentComment: parentId,
+      post: postId,
+      user: userId,
+    });
+    await replyComment.save();
+    replyComment.user = user;
+    console.log(replyComment);
 
-      let commentUpdate = await Comment.findOneAndUpdate(
-          {_id : parentId},
-          {$push: {replies: replyComment._id}},
-          { new: true}
-      )
-      res.status(200).json(replyComment)
+    let commentUpdate = await Comment.findOneAndUpdate(
+      { _id: parentId },
+      { $push: { replies: replyComment._id } },
+      { new: true }
+    );
+    res.status(200).json(replyComment);
   } catch (error) {
-      res.status(400).json({ error: error.message })
+    res.status(400).json({ error: error.message });
   }
-}
+};
 
 export const deleteComment = async (req, res) => {
   try {
-      let { id } = req.params;
+    let { id } = req.params;
 
-      const { postId, userId } = req.body;
-   
-      let comment = await Comment.findById(id);
-      let replyComment = await Comment.findOne({ parentComment: id })
-   
-      
-      while (replyComment) {
-          console.log("reached");
-          let current = id;
-          while (current) {
-              console.log("reached in current");
-              let com = await Comment.findOne({ parentComment: current })
-              if (com == null) {
-                  await Comment.deleteOne({ _id: id });
-                  break;
-              }
-              current = com._id;
-              await Comment.deleteOne({ _id: com._id })
-          }
-          replyComment = await Comment.findOne({ parentComment: id })
-       
+    const { postId, userId } = req.body;
+
+    let comment = await Comment.findById(id);
+    let replyComment = await Comment.findOne({ parentComment: id });
+
+    while (replyComment) {
+      console.log("reached");
+      let current = id;
+      while (current) {
+        console.log("reached in current");
+        let com = await Comment.findOne({ parentComment: current });
+        if (com == null) {
+          await Comment.deleteOne({ _id: id });
+          break;
+        }
+        current = com._id;
+        await Comment.deleteOne({ _id: com._id });
       }
+      replyComment = await Comment.findOne({ parentComment: id });
+    }
 
-      let commentDelete = await Comment.deleteOne({ _id: id });
-     
+    let commentDelete = await Comment.deleteOne({ _id: id });
 
-      if (commentDelete.deletedCount === 0 ) throw new Error("Comment not found");
-      
-      let comments = '';
-   
-      let commentsData = await Comment.find({ post: postId, parentComment: {$exists: false}}).populate('user', '-password').sort('-createdAt').lean()
+    if (commentDelete.deletedCount === 0) throw new Error("Comment not found");
 
-      res.status(200).json(commentsData);
+    let comments = "";
+
+    let commentsData = await Comment.find({
+      post: postId,
+      parentComment: { $exists: false },
+    })
+      .populate("user", "-password")
+      .sort("-createdAt")
+      .lean();
+
+    res.status(200).json(commentsData);
   } catch (error) {
-      res.status(404).json({ message: error.message });
-
+    res.status(404).json({ message: error.message });
   }
-}
+};
