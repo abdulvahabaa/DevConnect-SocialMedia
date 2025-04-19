@@ -1,7 +1,6 @@
 import express from "express";
 import bodyParser from "body-parser";
 import cors from "cors";
-import multer from "multer";
 import helmet from "helmet";
 import morgan from "morgan";
 import path from "path";
@@ -11,8 +10,7 @@ import authRoutes from "./routes/auth.mjs";
 import userRoutes from "./routes/users.mjs";
 import postRoutes from "./routes/posts.mjs";
 import adminRoutes from "./routes/admin.mjs";
-import { register } from "./controllers/auth.mjs";
-
+import connectToDatabase from "./config/db.mjs";
 
 /* CONFIGURATIONS */
 const __filename = fileURLToPath(import.meta.url);
@@ -23,7 +21,6 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 6001;
 
-
 app.use(express.json());
 app.use(cors());
 app.use(helmet());
@@ -33,21 +30,12 @@ app.use(bodyParser.json({ limit: "30mb", extended: true }));
 app.use(bodyParser.urlencoded({ limit: "30mb", extended: true }));
 app.use("/assets", express.static(path.join(__dirname, "public/assets")));
 
-/* FILE STORAGE */
+connectToDatabase();
 
-const storage = multer.memoryStorage();
-const upload = multer({ storage: storage });
-
-/* ROUTES WITH FILES */
-app.post("/api/auth/register", upload.single("picture"), register);
-// app.post("/posts", verifyToken, upload.single("picture"), createPost);
-
-/* ROUTES */
 app.use("/api/auth", authRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/posts", postRoutes);
 app.use("/api/admin", adminRoutes);
-/* MONGOOSE SETUP */
 
 app.listen(PORT, () => {
   console.log(

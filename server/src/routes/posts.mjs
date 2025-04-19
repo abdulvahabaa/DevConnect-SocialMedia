@@ -15,28 +15,20 @@ import {
 } from "../controllers/posts.mjs";
 import { verifyToken } from "../middleware/auth.mjs";
 import multer from "multer";
+
+
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
 
-/* FILE STORAGE */
 const router = express.Router();
-// create post
-router.post("/", verifyToken, upload.single("picture"), createPost);
 
-/* READ */
+router.post("/", verifyToken, upload.single("picture"), createPost);
 router.get("/", verifyToken, getFeedPosts);
 router.get("/:userId/posts", verifyToken, getUserPosts);
-
-/* UPDATE */
 router.patch("/:id/like", verifyToken, likePost);
 router.patch("/report", verifyToken, upload.none(), sendReport);
-
-/* Delete */
 router.delete("/:id/deletePost", verifyToken, deletePost);
-
-/* Edit*/
 router.put("/edit", verifyToken, upload.single("picture"), editPost);
-
 router.get("/comments/:postId", verifyToken, getPostComments);
 router.post("/:postId/commentPost", verifyToken, postComment);
 router.get("/comment/reply/:parentId", verifyToken, getReplyComments);

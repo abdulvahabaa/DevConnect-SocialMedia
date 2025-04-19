@@ -1,35 +1,25 @@
 import {
-  S3Client,
   PutObjectCommand,
   GetObjectCommand,
   DeleteObjectCommand,
 } from "@aws-sdk/client-s3";
-import crypto from "crypto";
 import sharp from "sharp";
 import dotenv from "dotenv";
-dotenv.config();
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
+import s3 from "../config/s3config.mjs";
 
-const BUCKET_NAME = process.env.BUCKET_NAME;
-const BUCKET_LOCATION = process.env.BUCKET_REGION;
-const S3_ACCESS_KEY = process.env.ACCESS_KEY;
-const S3_SECRET_KEY = process.env.SECRET_ACCESS_KEY;
+dotenv.config();
+
+const BucketName = process.env.BUCKET_NAME;
 
 const randomImagName = (bytes = 32) =>
   crypto.randomBytes(bytes).toString("hex");
-const s3 = new S3Client({
-  credentials: {
-    accessKeyId: S3_ACCESS_KEY,
-    secretAccessKey: S3_SECRET_KEY,
-  },
-  region: BUCKET_LOCATION,
-});
 
 export const uploadTos3 = async (req) => {
   const imageName = randomImagName();
   const buffer = await sharp(req.buffer).toBuffer();
   const params = {
-    Bucket: BUCKET_NAME,
+    Bucket: BucketName,
     Key: imageName,
     Body: buffer,
     ContentType: req.mimetype,
@@ -42,7 +32,7 @@ export const uploadTos3 = async (req) => {
 export const getFromS3 = async (image) => {
   try {
     const getObjectParams = {
-      Bucket: BUCKET_NAME,
+      Bucket: BucketName,
       Key: image,
     };
     const command = new GetObjectCommand(getObjectParams);
@@ -56,7 +46,7 @@ export const getFromS3 = async (image) => {
 export const deleteFromS3 = async (imageName) => {
   try {
     const params = {
-      Bucket: BUCKET_NAME,
+      Bucket: BucketName,
       Key: imageName,
     };
 

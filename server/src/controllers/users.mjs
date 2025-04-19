@@ -2,7 +2,6 @@ import User from "../models/User.mjs";
 import { getFromS3 } from "../utils/s3bucket.mjs";
 import bcrypt from "bcrypt";
 
-/* READ */
 export const getUser = async (req, res) => {
   try {
     const { id } = req.params;
@@ -72,9 +71,7 @@ export const getCommunities = async (req, res) => {
   }
 };
 
-/* UPDATE */
 export const addRemoveFriend = async (req, res) => {
-  console.log("reachedddddddddddd");
   try {
     const { id, friendId } = req.params;
     const user = await User.findById(id);
@@ -98,7 +95,6 @@ export const addRemoveFriend = async (req, res) => {
         return { _id, firstName, lastName, occupation, location, picturePath };
       }
     );
-    console.log(formattedFriends);
     res.status(200).json(formattedFriends);
   } catch (err) {
     res.status(404).json({ message: err.message });
@@ -106,30 +102,21 @@ export const addRemoveFriend = async (req, res) => {
 };
 
 export const editProfile = async (req, res) => {
-  console.log("editProfile Api called>>>>>>>>>>>");
-
   try {
-    console.log("req.body", req.body);
     const { id } = req.params;
-    console.log(id);
     const user = await User.findById(id);
-    console.log(user);
 
-    // compare old password with stored hash
     const isMatch = await bcrypt.compare(req.body.oldPassword, user.password);
-    console.log("isMatdh>>>>>>>>>>>", isMatch);
 
     if (!isMatch) {
       return res.status(400).json({ message: "Invalid old password" });
     }
 
-    // generate new hash for the new password (if provided)
     let newHashedPassword = user.password;
     if (req.body.newPassword) {
       newHashedPassword = await bcrypt.hash(req.body.newPassword, 10);
     }
 
-    // update user document
     const updatedUser = await User.findByIdAndUpdate(
       id,
       {
@@ -139,9 +126,8 @@ export const editProfile = async (req, res) => {
         occupation: req.body.occupation,
         password: newHashedPassword,
       },
-      { new: true } // set to return the updated document
+      { new: true }
     );
-    console.log(updatedUser);
     const userImageUrl = await getFromS3(updatedUser.picturePath);
     updatedUser.set({ picturePath: userImageUrl });
     res.status(200).json(updatedUser);

@@ -4,8 +4,6 @@ import User from "../models/User.mjs";
 
 export const adminLogin = async (req, res) => {
   try {
-    console.log("?????????????????????????");
-    console.log(req.body);
     const { email, password } = req.body;
     if (
       email === process.env.ADMIN_EMAIL &&
@@ -24,7 +22,6 @@ export const adminLogin = async (req, res) => {
 export const getUsers = async (req, res) => {
   try {
     const users = await User.find().sort("-createdAt");
-    // console.log(users)
     res.status(200).json(users);
   } catch (error) {
     res.status(404).json({ message: error.message });
@@ -54,7 +51,6 @@ export const getReports = async (req, res) => {
     const reports = await Post.find({
       $expr: { $gt: [{ $size: "$report" }, 0] },
     }).sort("-createdAt");
-    console.log("", reports);
     res.status(200).json(reports);
   } catch (error) {
     res.status(404).json({ message: error.message });
@@ -63,9 +59,7 @@ export const getReports = async (req, res) => {
 
 export const blockPost = async (req, res) => {
   const { postId } = req.params;
-  console.log(postId);
-  const post = await Post.findById(postId);
-  console.log(post);
+
   try {
     const reports = await Post.findByIdAndUpdate(
       postId,
@@ -78,7 +72,7 @@ export const blockPost = async (req, res) => {
       },
       { new: true }
     );
-    console.log("Updated post:", reports);
+
     const reportsData = await Post.find({
       $expr: { $gt: [{ $size: "$report" }, 0] },
     }).sort("-createdAt");
@@ -104,7 +98,6 @@ export const userAndPostCount = async (req, res) => {
 };
 
 export const dailyReports = async (req, res) => {
-  console.log("api called Backend here");
   try {
     const lineChartUsersData = await User.aggregate([
       {
@@ -126,7 +119,6 @@ export const dailyReports = async (req, res) => {
         },
       },
     ]);
-    console.log("lineChartUsersData", lineChartUsersData);
 
     const lineChartPostsData = await Post.aggregate([
       {
@@ -148,7 +140,6 @@ export const dailyReports = async (req, res) => {
         },
       },
     ]);
-    console.log("PostsData", lineChartPostsData);
 
     const lineChartReportsData = await Post.aggregate([
       {
@@ -175,7 +166,6 @@ export const dailyReports = async (req, res) => {
         $sort: { x: 1 },
       },
     ]);
-    console.log("lineChartReporsData", lineChartReportsData);
 
     res.json({ lineChartReportsData, lineChartPostsData, lineChartUsersData });
   } catch (error) {

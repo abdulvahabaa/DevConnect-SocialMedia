@@ -15,12 +15,9 @@ const router = express.Router();
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
 
-/* READ */
 router.get("/:id/friends", verifyToken, getUserFriends);
 router.get("/communities", verifyToken, getCommunities);
 router.get("/:id", verifyToken, getUser);
-
-/* UPDATE */
 router.patch("/:id/:friendId", verifyToken, addRemoveFriend);
 router.put(
   "/profile/:id/editProfile",

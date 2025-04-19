@@ -21,8 +21,6 @@ const connectToDatabase = async () => {
     );
 
     await mongoose.connect(MONGODB_URI, {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
       maxPoolSize: 6,
     });
 

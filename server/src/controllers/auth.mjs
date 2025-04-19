@@ -6,10 +6,10 @@ import { getFromS3, uploadTos3 } from "../utils/s3bucket.mjs";
 /* REGISTER USER */
 export const register = async (req, res) => {
   try {
-    console.log("req.body");
-    console.log("req.body", req.body);
-    console.log("req.file", req.file);
-    console.log("req.file.buffer", req.file.buffer);
+    // console.log("req.body");
+    // console.log("req.body", req.body);
+    // console.log("req.file", req.file);
+    // console.log("req.file.buffer", req.file.buffer);
     const {
       firstName,
       lastName,
@@ -23,7 +23,6 @@ export const register = async (req, res) => {
     } = req.body;
 
     const image = await uploadTos3(req.file);
-    console.log("image", image);
     const salt = await bcrypt.genSalt();
     const passwordHash = await bcrypt.hash(password, salt);
 
@@ -41,20 +40,19 @@ export const register = async (req, res) => {
       impressions: Math.floor(Math.random() * 10000),
     });
     const savedUser = await newUser.save();
-    console.log(savedUser);
     res.status(201).json(savedUser);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
 };
 
-/* LOGGING IN */
-export const login = async (req, res) => {
+export const login = async (req, res) => { 
   try {
-    console.log(req.body);
     const { email, password } = req.body;
     const user = await User.findOne({ email: email });
+
     if (!user) return res.status(400).json({ msg: "User does not exist. " });
+    
     if (user.status === false) {
       return res.status(401).json({
         msg: "Your account has been blocked. Please contact support.",
